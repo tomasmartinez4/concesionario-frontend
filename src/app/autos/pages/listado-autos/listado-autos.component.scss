@@ -1,0 +1,112 @@
+/* listado-autos.component.scss */
+.autos-card {
+  margin: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: var(--surface-card);
+}
+
+.autos-table {
+  width: 100%;
+  
+  th {
+    background-color: var(--surface-section);
+    color: var(--text-color);
+    font-weight: 600;
+    padding: 1rem;
+    text-align: left;
+  }
+
+  td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--surface-border);
+  }
+
+  .p-button {
+    margin: 0 0.25rem;
+  }
+}
+
+.column-filter {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid var(--surface-border);
+  background-color: var(--surface-ground);
+}
+
+// Responsive adjustments
+@media screen and (max-width: 768px) {
+  .autos-table {
+    th, td {
+      padding: 0.75rem;
+    }
+  }
+}
+
+// Dialog Styles
+:host ::ng-deep {
+  .p-dialog {
+    .p-dialog-header {
+      background-color: var(--surface-section);
+      border-bottom: 1px solid var(--surface-border);
+      padding: 1.5rem;
+      
+      .p-dialog-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+    }
+
+    .p-dialog-content {
+      padding: 1.5rem;
+      
+      .p-field {
+        margin-bottom: 1.5rem;
+        
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 500;
+          
+          &.p-label-required:after {
+            content: '*';
+            color: var(--red-500);
+            margin-left: 0.25rem;
+          }
+        }
+
+        .p-input-icon-left {
+          width: 100%;
+          
+          i {
+            color: var(--text-color-secondary);
+          }
+        }
+
+        input {
+          width: 100%;
+          padding-left: 2.5rem;
+        }
+
+        .p-error {
+          color: var(--red-500);
+          font-size: 0.875rem;
+          margin-top: 0.25rem;
+        }
+      }
+    }
+
+    .p-dialog-footer {
+      background-color: var(--surface-section);
+      border-top: 1px solid var(--surface-border);
+      padding: 1rem 1.5rem;
+      
+      button {
+        min-width: 6rem;
+      }
+    }
+  }
+}
+  

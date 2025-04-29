@@ -1,0 +1,231 @@
+<p-card header="Listado de Autos" styleClass="autos-card">
+  <ng-template pTemplate>
+    <!-- Toolbar Section -->
+    <p-toolbar styleClass="mb-4">
+      <!-- Left toolbar group -->
+      <div class="p-toolbar-group-left">
+        <button 
+          pButton 
+          label="Nuevo Auto" 
+          icon="pi pi-plus" 
+          class="p-button-primary"
+          (click)="onCreate()">
+        </button>
+      </div>
+    </p-toolbar>
+
+    <p-table 
+      #dt 
+      [value]="autos" 
+      [paginator]="true" 
+      [rows]="5" 
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Mostrando {first}–{last} de {totalRecords}"
+      [responsiveLayout]="'scroll'" 
+      styleClass="autos-table p-datatable-gridlines"
+      [rowHover]="true"
+      [scrollable]="true">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="marca" class="min-w-10rem">
+            <div class="flex flex-column">
+              <div class="flex align-items-center">
+                Marca
+                <p-sortIcon field="marca"></p-sortIcon>
+              </div>
+              <input
+                pInputText
+                type="text"
+                class="p-column-filter mt-2 w-full"
+                placeholder="Filtrar marca"
+                (input)="dt.filter($any($event.target).value, 'marca', 'contains')"
+                (click)="$event.stopPropagation()"
+              />
+            </div>
+          </th>
+          <th pSortableColumn="modelo" class="min-w-10rem">
+            <div class="flex flex-column">
+              <div class="flex align-items-center">
+                Modelo
+                <p-sortIcon field="modelo"></p-sortIcon>
+              </div>
+              <input
+                pInputText
+                type="text"
+                class="p-column-filter mt-2 w-full"
+                placeholder="Filtrar modelo"
+                (input)="dt.filter($any($event.target).value, 'modelo', 'contains')"
+                (click)="$event.stopPropagation()"
+              />
+            </div>
+          </th>          
+          <th pSortableColumn="anio" class="min-w-8rem">
+            <div class="flex align-items-center">
+              Año
+              <p-sortIcon field="anio"></p-sortIcon>
+            </div>
+          </th>
+          <th pSortableColumn="precio" class="min-w-10rem">
+            <div class="flex align-items-center">
+              Precio
+              <p-sortIcon field="precio"></p-sortIcon>
+            </div>
+          </th>
+          <th class="min-w-8rem">Acciones</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-auto>
+        <tr>
+          <td>{{ auto.marca }}</td>
+          <td>{{ auto.modelo }}</td>
+          <td class="text-center">{{ auto.anio }}</td>
+          <td class="text-right">{{ auto.precio | currency:'USD':'symbol':'1.0-0' }}</td>
+          <td>
+            <div class="flex gap-2 justify-content-center">
+              <button 
+                pButton 
+                icon="pi pi-pencil" 
+                class="p-button-text p-button-rounded"
+                pTooltip="Editar"
+                (click)="onEdit(auto)">
+              </button>
+              <button 
+                pButton 
+                icon="pi pi-trash" 
+                class="p-button-text p-button-rounded p-button-danger"
+                pTooltip="Eliminar"
+                (click)="onDelete(auto)">
+              </button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="text-center p-4">
+            <i class="pi pi-info-circle mr-2"></i>
+            No hay autos para mostrar.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </ng-template>
+</p-card>
+<p-dialog
+  header="{{ isEdit ? 'Editar Auto' : 'Nuevo Auto' }}"
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [style]="{width: '450px'}"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [closeOnEscape]="true"
+  [blockScroll]="true"
+  [baseZIndex]="10000"
+>
+  <form [formGroup]="form" class="p-fluid p-formgrid p-grid">
+    <div class="p-field p-col-12">
+      <label for="marca" class="p-label-required">Marca</label>
+      <span class="p-input-icon-left w-full">
+        <i class="pi pi-car"></i>
+        <input
+          id="marca"
+          type="text"
+          pInputText
+          formControlName="marca"
+          placeholder="Ingrese la marca"
+          class="w-full"
+        />
+      </span>
+      <small class="p-error"
+             *ngIf="form.get('marca')?.hasError('required') && form.get('marca')?.touched">
+        La marca es requerida
+      </small>
+    </div>
+
+    
+    <div class="p-field p-col-12">
+      <label for="modelo" class="p-label-required">Modelo</label>
+      <span class="p-input-icon-left w-full">
+        <i class="pi pi-tag"></i>
+        <input
+          id="modelo"
+          type="text"
+          pInputText
+          formControlName="modelo"
+          placeholder="Ingrese el modelo"
+          class="w-full"
+        />
+      </span>
+      <small class="p-error"
+             *ngIf="form.get('modelo')?.hasError('required') && form.get('modelo')?.touched">
+        El modelo es requerido
+      </small>
+    </div>
+
+    
+    <div class="p-field p-col-12 p-md-6">
+      <label for="anio" class="p-label-required">Año</label>
+      <span class="p-input-icon-left w-full">
+        <i class="pi pi-calendar"></i>
+        <input
+          id="anio"
+          type="number"
+          pInputText
+          formControlName="anio"
+          [min]="1900"
+          [max]="currentYear + 1"
+          class="w-full"
+        />
+      </span>
+      <small class="p-error"
+             *ngIf="(form.get('anio')?.hasError('min') || form.get('anio')?.hasError('max')) && form.get('anio')?.touched">
+        El año debe estar entre 1900 y {{ currentYear + 1 }}
+      </small>
+    </div>
+
+    
+    <div class="p-field p-col-12 p-md-6">
+      <label for="precio" class="p-label-required">Precio</label>
+      <span class="p-input-icon-left w-full">
+        <i class="pi pi-dollar"></i>
+        <input
+          id="precio"
+          type="number"
+          pInputText
+          formControlName="precio"
+          [min]="0"
+          class="w-full"
+        />
+      </span>
+      <small class="p-error"
+             *ngIf="form.get('precio')?.hasError('min') && form.get('precio')?.touched">
+        El precio debe ser mayor o igual a 0
+      </small>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-content-between w-full">
+      <button
+        pButton
+        label="Cancelar"
+        icon="pi pi-times"
+        class="p-button-text"
+        (click)="dialogVisible = false"
+      ></button>
+      <button
+        pButton
+        label="Guardar"
+        icon="pi pi-check"
+        class="p-button-primary"
+        [disabled]="form.invalid"
+        (click)="save()"
+      ></button>
+    </div>
+  </ng-template>
+</p-dialog>
+
